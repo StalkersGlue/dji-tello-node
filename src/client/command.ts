@@ -166,11 +166,11 @@ export class CentimetersCommand implements Commandable, Reversible<CentimetersCo
     };
 
     reverse(): CentimetersCommand {
-        return new CentimetersCommand(`${this.centimetersCommands.find(it => this.centimetersCommand.command === it.reverse)} ${this.centimeters}`)
+        return new CentimetersCommand(`${this.centimetersCommands.find(it => this.centimetersCommand.command === it.command).reverse} ${this.centimeters}`)
     }
 
     toString() {
-        return `${this.centimetersCommand.command} ${this.centimetersCommand}`
+        return `${this.centimetersCommand.command} ${this.centimeters}`
     }
 
     parseBase(command: string): CentimetersCommandType {
