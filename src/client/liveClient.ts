@@ -24,7 +24,7 @@ export class LiveClient implements TelloClient {
 
         this.metricClient.on('message', (message, info) => {
             // Todo
-            console.log(message.toString().split(";").find(it => it.split(":")[0] === "bat"));
+            // console.log(message.toString().split(";").find(it => it.split(":")[0] === "bat"));
         })
 
     }
