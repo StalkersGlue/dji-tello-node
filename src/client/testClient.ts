@@ -50,4 +50,8 @@ export class TestClient implements TelloClient {
         return parsedCommand
     }
 
+    getStatus(): Promise<string> {
+        return Promise.resolve("pitch:0;roll:0;yaw:0;vgx:0;vgy:0;vgz:0;templ:82;temph:83;tof:10;h:0;bat:32;baro:-86.90;time:0;agx:-7.00;agy:-17.00;agz:-998.00;");
+    }
+
 }

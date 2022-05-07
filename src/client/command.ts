@@ -1,8 +1,9 @@
 export type CommandType = BasicCommand | FlipCommand | CentimetersCommand | DegreesCommand
 
-export class Command implements Commandable{
+export class Command implements Commandable {
     readonly command: CommandType
-    constructor(command: string ) {
+
+    constructor(command: string) {
         this.command = this.parse(command)
     }
 
@@ -11,26 +12,30 @@ export class Command implements Commandable{
         try {
             try {
                 candidate = new BasicCommand(command)
-            } catch (e) {}
+            } catch (e) {
+            }
 
             try {
                 candidate = new FlipCommand(command)
-            } catch (e) {}
+            } catch (e) {
+            }
 
             try {
                 candidate = new CentimetersCommand(command)
-            } catch (e) {}
+            } catch (e) {
+            }
 
             try {
                 candidate = new DegreesCommand(command)
-            } catch (e) {}
+            } catch (e) {
+            }
 
 
         } catch (e) {
 
         } finally {
             if (candidate) {
-               return candidate
+                return candidate
             } else {
                 throw Error(`unable to parse ${command}`)
             }
@@ -78,7 +83,7 @@ export class BasicCommand implements Commandable, Reversible<BasicCommand> {
         return this;
     }
 
-    private parse(command: string) : BasicCommandType {
+    private parse(command: string): BasicCommandType {
         const parsedCommand = this.commands.find(it => it === command);
         if (parsedCommand) {
             return parsedCommand
@@ -128,9 +133,9 @@ export class FlipCommand implements Commandable, Reversible<FlipCommand> {
         return `${this.flipCommand} ${this.flipDirection}`
     }
 
-    private parseDirection(command: string) : FlipDirection {
+    private parseDirection(command: string): FlipDirection {
         const parsedCommand = this.flipDirections.find(it => it.command === command);
-        if(parsedCommand) {
+        if (parsedCommand) {
             return parsedCommand.command
         } else {
             throw Error(`${command} is not a flip command`)
@@ -142,7 +147,10 @@ type CentimetersCommandType =
     { command: "up", reverse: "down" } |
     { command: "down", reverse: "up" } |
     { command: "left", reverse: "right" } |
-    { command: "right", reverse: "left" }
+    { command: "right", reverse: "left" } |
+    { command: "forward", reverse: "back" } |
+    { command: "back", reverse: "forward" }
+
 
 export class CentimetersCommand implements Commandable, Reversible<CentimetersCommand> {
     readonly centimetersCommand: CentimetersCommandType
@@ -153,7 +161,9 @@ export class CentimetersCommand implements Commandable, Reversible<CentimetersCo
             {command: "up", reverse: "down"},
             {command: "down", reverse: "up"},
             {command: "left", reverse: "right"},
-            {command: "right", reverse: "left"}
+            {command: "right", reverse: "left"},
+            {command: "forward", reverse: "back"},
+            {command: "back", reverse: "forward"}
         ]
 
     constructor(command: string) {
@@ -175,7 +185,7 @@ export class CentimetersCommand implements Commandable, Reversible<CentimetersCo
 
     parseBase(command: string): CentimetersCommandType {
         const parsedCommand = this.centimetersCommands.find(it => it.command === command.split(' ')[0]);
-        if(parsedCommand) {
+        if (parsedCommand) {
             return parsedCommand
         } else {
             throw Error(`${command} is not a centimeters command`)
@@ -215,7 +225,7 @@ export class DegreesCommand implements Commandable, Reversible<DegreesCommand> {
     };
 
     reverse(): DegreesCommand {
-        return new DegreesCommand(`${this.degreesCommands.find(it => this.degreesCommand.command === it.reverse)} ${this.degrees}`)
+        return new DegreesCommand(`${this.degreesCommands.find(it => this.degreesCommand.command === it.command).reverse} ${this.degrees}`)
     }
 
     toString() {
@@ -224,7 +234,7 @@ export class DegreesCommand implements Commandable, Reversible<DegreesCommand> {
 
     private parseBase(command: string): DegreesCommandType {
         const parsedCommand = this.degreesCommands.find(it => it.command === command.slice(0, 3).trimEnd());
-        if(parsedCommand) {
+        if (parsedCommand) {
             return parsedCommand
         } else {
             throw Error(`${command} is not a centimeters command`)

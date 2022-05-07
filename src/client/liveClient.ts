@@ -9,6 +9,7 @@ export class LiveClient implements TelloClient {
     readonly DRONE_PORT = 8889;
     readonly DRONE_ADDRESS = '192.168.10.1';
     readonly commandSuccessEmitter = new EventEmitter();
+    readonly metricEmitter = new EventEmitter();
 
     readonly commandClient = udp.createSocket('udp4').bind(this.commandSocket);
     readonly metricClient = udp.createSocket('udp4').bind(this.metricSocket);
@@ -23,8 +24,7 @@ export class LiveClient implements TelloClient {
         })
 
         this.metricClient.on('message', (message, info) => {
-            // Todo
-            // console.log(message.toString().split(";").find(it => it.split(":")[0] === "bat"));
+            this.metricEmitter.emit('status', message.toString())
         })
 
     }
@@ -41,6 +41,20 @@ export class LiveClient implements TelloClient {
                 clearTimeout(timeout);
                 console.log(`${command} successful`);
                 return resolve();
+            });
+        })
+    }
+
+    async getStatus(): Promise<string> {
+        return new Promise(async (resolve, reject) => {
+            const timeout = setTimeout(() => {
+                return reject();
+            }, this.timeout_ms);
+
+            once(this.metricEmitter, "status").then(data => {
+                clearTimeout(timeout);
+                // @ts-ignore
+                return resolve(data[0].trim());
             });
         })
     }
